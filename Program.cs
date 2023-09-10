@@ -7,7 +7,15 @@ namespace LongPolling
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddCors();
             var app = builder.Build();
+
+            app.UseCors(policy => 
+            {
+                policy.AllowAnyHeader();
+                policy.AllowAnyMethod();
+                policy.AllowAnyOrigin();
+            });
 
             app.MapGet("/submit", () => 
             {
@@ -63,7 +71,7 @@ namespace LongPolling
             t.Elapsed += (sender, e) =>
             {
                 var job = jobsList.First(x => x.id == id);
-                job.status += 10;
+                job.status += 5;
                 if (job.status >= 100)
                 {
                     t.Stop();
